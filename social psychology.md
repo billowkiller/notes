@@ -23,3 +23,63 @@ People aren't neutral. Instead they come in with certain predispositions, certai
 *	Behavioral confirmation takes place when people's social expectations lead them to act in a way that causes others to confirm these expectations. Social type of self-fulfilling prophecy.
 
 *	security delima
+
+**Why Are Thin-Slice Judgements Accurate?**
+
+* May have evolutionary value, such as rapidly identifying:
+    
+    * Potential threats
+    * Possible partners
+    * Competent leaders
+
+* Our brains may process emotions before cognitions
+
+* Thin Slices may avoid idstractions that lower accruacy
+
+**Some Strengths and Weaknesses**
+
+* Social Judgements can take place very rapidly, sometimes with surprising accuracy.
+
+* At the same time, they're prone to certain biases and distortions, and once our Judgements are formed, we tend to lock into them and search for confirming evidence rather than chanllenging the judgments we've already made.
+
+***
+
+**Salience and Causal Attribution**
+
+* In general, the more salient a stimulus is, the more likely it is to be viewed as causal.
+
+* Perceptions of causality are partly a function of where one's attention is directed.
+
+* And attention is in turn a function of salience.
+
+If we want to make fair and accurate judgments about what led somebody to behave in a certain way, or who's responsible or, in the case of a crime, even who's guity, then we probably don't want to be influenced by where we happen to be influenced by where we happen to be looking at the moment that we're making the judgment, and we sure don't want to be influenced without knowing it.
+
+***
+
+**Atitude and behavior**
+
+Atitude and behavior inconsistency. Often
+
+* Maybe journals reject reports of consistency.
+
+* Many attitudes relate to any one behavior.
+
+* Many behaviors relate to any one attitude.
+
+* Attitude items tend to be more general.
+
+* Attitudes and behaviors are often elicited under different conditions.
+
+Attitudes and behaviors are most likely to be related when:
+
+* They closely match each other(e.g., in generality/specificity)
+
+* The attitude is strong or potent(e.g., acquired through experience)
+
+* The attitude is easy to recall and has been stable overtime
+
+* People are made aware of themselves and their attitudes.
+
+* Outside influences are kept to a minimum
+
+People generally motivated to reduce or avoid psychological inconsistencies
