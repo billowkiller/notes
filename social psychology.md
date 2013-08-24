@@ -83,3 +83,27 @@ Attitudes and behaviors are most likely to be related when:
 * Outside influences are kept to a minimum
 
 People generally motivated to reduce or avoid psychological inconsistencies
+
+
+You don't have enough respect for your own thinking, for your own ideas, to follow them through to their logical conclusion, and you expect me to do that? This is graduate school, this isn't kindergarten.
+
+***
+
+**How to Be Persuasive**
+
+Some Effective Social Influence Techniques
+
+* Asking people to imagine or predict doing something
+* Telling a stranger your name before making a request
+* Engaging people in dialogue rather than a monologue(talking *with* people rather than *at* people)
+
+Three famous techniques:
+
+* The Foot-in-the-Door Technique
+	* Premise: People are more likely to comply with a large request after a small one
+	* consistent with self-perception theory
+* The Door-in-the-Face Technique
+	* When people reject a large request, they often become more likely to comply with **smaller** request down the road
+
+* The Low-Ball Technique
+	* This social influence technique involves only one request (e.g., to participate in an experiment on thinking processes), but the cost of complying is increased after people say yes.
