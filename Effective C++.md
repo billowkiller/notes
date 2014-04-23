@@ -70,3 +70,20 @@ C++高效编程守则视状况而变化，取决于你使用C++的那一部分�
 为内置对象进行手工初始化，`C++`不保证初始化它们。
 构造函数使用`成员初值列`，不要在函数内使用赋值操作。其排列次序应该和申明次序相同。
 为免除跨编译单元初始化次序问题。以`local static`对象替代`non-local static`对象。
+
+
+##Constructors, destructors, and Assignment Operators
+###Item 05： Know what functions C++ silently writes and calls
+
+- `default`构造函数和析构函数调用`base classes`和`none-static`成员变量的构造函数和析构函数。且只有base是`virtual`析构时，它才是`virtual`的。
+- 如果类内含`reference`或`const`成员，或者`base classes`将`copy assignment`操作符申明为`private`，则需要自己定义`copy assignment`
+
+###Item 06: Explicitly disallow the use of compiler-generated functions you do not want
+
+不实现`copy`或`copy assignment`的方法：
+
+1. 将成员函数声明为private而且故意不实现它们。
+2. 设计一个专门为了组织copying动作的`base class`， 将`copy`和`copy assigment`声明为`private`。接着私有继承base class
+3. `Boost`提供的class，`nonecopyable`
+
+###Item 07: Declare destructors virtual in ploymorphic base classes
