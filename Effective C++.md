@@ -87,3 +87,58 @@ C++高效编程守则视状况而变化，取决于你使用C++的那一部分�
 3. `Boost`提供的class，`nonecopyable`
 
 ###Item 07: Declare destructors virtual in ploymorphic base classes
+
+	Base *pt = new Derived;
+	delete pt;
+
+`derived class`对象经由一个`base class`指针被删除，如果`base class`有个k析构函数，则对象的`derived`成分没被销毁。
+
+无端地将所有classes的析构函数声明为`virtual`，就像从未声明它们为`virtual`一样，都是错误的，带来对象体积的增加。只有当class内含有至少一个`virtual`函数才为它声明`virtual`析构函数。
+
+为你希望它成为抽象的那个class(polymorphic base classes)声明一个`pure virtual`析构函数。
+
+	class AWOV {
+	public:
+		virtual  ~AWOV() = 0;
+	};
+	AWOV::~AWOV() {}  //pure virtual 析构函数的定义 
+
+然而必须为这个`pure virtual`函数提供一份定义，根据析构函数的运作方式，编译器会在AWOV的`derived classes`的析构函数中创建一个对~AWOV的调用动作，所以必须为这个函数提供一份定义。否则，连接器会发出抱怨。
+
+###Item 08: Prevent exceptions from leaving destructors
+
+- 析构函数绝对不要突出异常。如果一个被析构函数调用的函数可能抛出异常，析构函数应该捕捉任何异常，然后吞下它们（不传播）或结束程序。
+- 如果客户需要对某个操作函数运行期间抛出的异常作出反应，那么class应该提供一个普通函数（而非在析构函数中）执行该操作。
+
+###Item 09: Never call virtual functions during construction or destruction
+
+在base class构造期间，virtual函数不是virtual函数。因为derived class对象还未构造好，所以base class构造期间virtual函数绝不会下降到derived classes阶层。在derived class对象的base class构造期间，对象类型是base class而不是derived class。
+
+在构造期间，可以借由“令derived classes将必要的构造信息向上传递至base class构造函数”替换之。
+
+###Item 10: Have assignment operators return a reference to *this
+
+	Widget& operator=(const widget &rhs) {
+		...
+		return *this;
+	}
+
+###Item 11: Handle assignment to self in operator=
+
+容易掉进“在停止使用资源之前意外释放了它”的陷阱。
+
+让`operator=`具备“异常安全性”往往自动获得“自我复制安全”的汇报。
+	
+	Widget& operator=(const widget &rhs) {
+		Bitmap * pOrig = pb;
+		pb = new Bitmap(*rhs.pb);
+		delete pOrig;
+		return *this;
+	}
+
+还可以使用`copy and swap`技术。或利用一下事实：(1)某class的`copy assignment`操作符可能被声明`by value`的方式；(2)以`by value`的方式传递东西会造成一份副本。
+
+###Item 12: Copy all parts of an object
+
+- 编写一个copying函数确保(1)复制所有local成员变量，(2)调用所有base classes内的适当的copy函数。
+- 不要尝试以某个copying函数实现另一个copying函数。应该讲共同机能放进第三个函数中，并有两个copying函数共同调用。
