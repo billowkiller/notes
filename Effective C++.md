@@ -142,3 +142,13 @@ C++高效编程守则视状况而变化，取决于你使用C++的那一部分�
 
 - 编写一个copying函数确保(1)复制所有local成员变量，(2)调用所有base classes内的适当的copy函数。
 - 不要尝试以某个copying函数实现另一个copying函数。应该讲共同机能放进第三个函数中，并有两个copying函数共同调用。
+
+##资源管理
+###Use objects to manage resources.
+
+-   获得资源后立即放进资源对象内。RAII--Resource Acquisition Is initialization
+-   管理对象运用析构寒素确保资源被释放。
+-   auto_ptr通过copy构造函数或copy assignment操作符复制它们，它们会变成null，而复制所得到的指针将取得资源的唯一拥有权。
+-   动态分配得到的array身上使用auto_ptr或tr1::shared_ptr是个馊主意。两者再析构函数内做delete而不是delete[]动作。
+
+###Think carefully about copying behavior in resource-managing classes
