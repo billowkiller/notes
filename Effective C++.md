@@ -310,3 +310,67 @@ new对应delete，new[] 对应delete[]
 - 函数提供的异常安全保证通常最高只等于其所调用之各个函数的异常安全保证中的最弱者。
 
 ###Item 30: Understand the ins and outs of inlining
+
+`inline`只是对编译器的一个申请，不是强制命令。这项申请可以隐喻提出，也可以明确提出。隐喻方式是将函数定义于class定义内：
+
+	class Person {
+	public:
+		int age() const { return theAge; } //隐喻的inline申请
+	private:
+		int the Age;
+	};
+
+这样的函数通常是成员函数，`friend`函数也可以被定义于class内，这样它们也是被隐喻为`inline`。
+
+`inline`和`template`函数通常都被定义于头文件内。
+
+	inline void f() {}
+	void ( * pf )() = f;
+	f(); //这个调用将被inlined
+	pf(); //或许不被inlined，因为它通过函数指针达成。
+
+- `inline`函数无法随着程序库升级而升级。调用`inline`函数的程序都必须重新编译。
+- 大部分调试器面对`inline`函数都束手无策。
+
+###Item 31: Minimize compilation dependencies between files
+
+以`声明的依存性`替换`定义的依存性`：
+
+- 如果使用`object reference`或`object pointers`可以完成任务，就不要使用objects。
+- 如果能够，尽量以class`声明式`替换class`定义式`。 
+- 为声明式和定义式提供不同的头文件。这种方法无论是否涉及templates都适用。
+	- <iosfwd>内含iostream各组件的声明式，包括<sstream>, <streambuf>, <fstream>和<iostream>
+
+##继承和面向对象设计
+###Item 32: Make sure public inheritance models "is-a"
+
+###Item 33: Avoid hiding inherited names
+
+	class Base {
+	public:
+		virtual void mf1() = 0;
+		virtual void mf1(int);
+		virtual void mf2();
+		void mf3();
+		void mf3(double);
+	};
+
+	class Derived: public Base {
+	public:
+		using Base::mf1;  //让base class内名为mf1和mf3的所有东西
+		using Base::mf3;  //在Derived作用域内都可见
+		virtual void mf1();
+		void mf3();
+	};	
+
+	//或者
+	class Derived: private Base {
+	public:
+		virtual void mf1() { Base::mf1(); }  //转交函数，暗自称为inline
+	};
+
+- derived class内的名称会遮掩base classes内的名称。在public继承下从来没有人希望如此。
+	- 上述规则对不同参数类型也适用，而且不论函数式virtual或non-virtual。
+- 为了让被遮掩的名称再见天日，可使用using声明式或转变函数。
+
+###Item 34: Differentiate between inheritance of interface and inheritance of implementation
