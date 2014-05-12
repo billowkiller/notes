@@ -374,3 +374,19 @@ new对应delete，new[] 对应delete[]
 - 为了让被遮掩的名称再见天日，可使用using声明式或转变函数。
 
 ###Item 34: Differentiate between inheritance of interface and inheritance of implementation
+
+- 接口继承和实现继承不同。在public继承之下，derived classes总是继承base class的接口。
+- pure virtual函数只具体指定接口继承。pure virtual函数必须在derived classes中重新声明，但它们也可以拥有自己的实现。
+- 简朴的impure virtual函数具体指定接口继承及缺省实现继承。
+- non-virtual函数具体指定接口继承以及强制性实现继承。
+
+###Item 35: Consider alternatives to virtual functions
+
+当你为解决问题而寻找某个设计方法时，不妨考虑virtual函数的替代方案。
+
+- 使用non-virtual interface（NVI）手法，那是Template Method设计模式的一种特殊形式。它以public non-virtual成员函数包裹较低访问性(private或protected)的virtual函数, wrapper。
+- 将virtual函数替换为函数指针成员变量，这是Strategy设计模式的一种分解表现形式。
+- 以tr1::function成员变量替换virtual函数，因而允许使用任何可调用物(callable entity)搭配一个兼容于需求的签名式。这也是Strategy设计模式的某种形式。
+- 将继承体系内的virtual函数替换为另一个继承体系内的virtual函数。这是Strategy设计模式的传统实现手法。
+
+###Item 36: Never redefine an inherited non-virtual function
