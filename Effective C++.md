@@ -390,3 +390,36 @@ new对应delete，new[] 对应delete[]
 - 将继承体系内的virtual函数替换为另一个继承体系内的virtual函数。这是Strategy设计模式的传统实现手法。
 
 ###Item 36: Never redefine an inherited non-virtual function
+
+non-virtual是静态绑定，调用的方法是静态类型所拥有的方法，而不是实际类型所拥有的方法。
+
+###Item 37: Never redefine a function's inherited default parameter value
+
+virtual函数是动态绑定，而缺省参数值确实静态绑定。静态绑定为early binding，动态绑定为late binding。即使子类重新定义了virtual函数的缺省参数，调用还是用了父类的缺省参数。这是为了运行期效率。如果缺省参数值是动态绑定，编译器就必须有某种办法在运行期间为virtual函数决定适当的缺省参数值。
+
+可以使用NVI（non-virtual interface）手法：
+
+	class Shape {
+	public:
+		enum ShapeColor { Red, Green, Blue};
+		void draw(ShapeColor color = Red) const {
+			doDraw(color);
+		}
+	private:
+		virtual void doDraw(ShapeColor color) const = 0;//真正的工作在此处
+	}；
+	class Rectangle: public Shape {
+	public:
+		...
+	private:
+		virtual void doDraw(ShapeColor color) const; //不须制定缺省参数值
+	};
+
+###Item 39: Use private inheritance judiciously
+
+编译器不会自动将一个derived class对象转换为一个base class对象。
+由private base class继承而来的所有成员，在derived class 中都会变成private 属性。
+private继承在软件设计层面没有意义，只有在软件实现层面有意义。
+
+Private继承意味is-implemented-in-terms of(根据某物实际出)。它通常比复合的级别低。但是当derived class需要访问protected base class的成员，或需要重新定义继承而来的virtual函数时，这么设计是合理的。
+和复合不同，private继承可以造成empty base最优化。这对致力于对象尺寸最小化的程序库开发者而言，可能很重要。
