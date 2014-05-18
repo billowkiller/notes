@@ -417,9 +417,36 @@ virtual函数是动态绑定，而缺省参数值确实静态绑定。静态绑�
 
 ###Item 39: Use private inheritance judiciously
 
-编译器不会自动将一个derived class对象转换为一个base class对象。
-由private base class继承而来的所有成员，在derived class 中都会变成private 属性。
-private继承在软件设计层面没有意义，只有在软件实现层面有意义。
+- 编译器不会自动将一个derived class对象转换为一个base class对象。
+- 由private base class继承而来的所有成员，在derived class 中都会变成private 属性。
+- private继承在软件设计层面没有意义，只有在软件实现层面有意义。
+- Private继承意味is-implemented-in-terms of(根据某物实际出)。它通常比复合的级别低。但是当derived class需要访问protected base class的成员，或需要重新定义继承而来的virtual函数时，这么设计是合理的。
+和
+- 复合不同，private继承可以造成empty base最优化。这对致力于对象尺寸最小化的程序库开发者而言，可能很重要。
 
-Private继承意味is-implemented-in-terms of(根据某物实际出)。它通常比复合的级别低。但是当derived class需要访问protected base class的成员，或需要重新定义继承而来的virtual函数时，这么设计是合理的。
-和复合不同，private继承可以造成empty base最优化。这对致力于对象尺寸最小化的程序库开发者而言，可能很重要。
+怎样阻止derived classes重新定义virtual函数？
+
+	class Widget {
+	private:
+		class WidgetTimer: public Timer {
+		public:
+			virtual void onTick() const;
+		};
+		WidgetTimer timer;
+	};
+
+私有继承空类并不继承空类的空间
+
+	class Empty {}; //sizeof Empty == 1;
+	class HoldsAnInt: private Empty { int x; }; //sizeof HoldsAnInt == 4;
+
+###Item 40: Use multiple inheritance judiciously
+
+- 多重继承比单一继承复杂。它可能导致新的歧义性，以及对virtual继承的需要。
+- virtual继承会增加大小、速度、初始化（及赋值）复杂度等等成本。如果virutal base classes不带任何数据，将是最具使用价值的情况。Java和.Net的Interfaces指的注意，它在许多方面兼容于C++的virtual base classes，而且也不允许含有任何数据。
+- 多重继承的确有正当用途。其中一个情节涉及public继承某个Interface class和private继承某个协助实现的class的两相结合。
+
+##模版与泛型编程
+
+###Item 41: Understand implicit interfaces and compile-time polymorphism
+ 
