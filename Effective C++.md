@@ -449,4 +449,70 @@ virtual函数是动态绑定，而缺省参数值确实静态绑定。静态绑�
 ##模版与泛型编程
 
 ###Item 41: Understand implicit interfaces and compile-time polymorphism
- 
+
+- classes和templates都支持接口和多态。
+- 对classes而言接口是显示的，以数字签名为中心。多态则是通过virtual函数发生于运行期。
+- 对template参数而言，接口是隐式的，奠基于**有效表达式**。多态则是通过template具现化和函数重载解析发生于编译器。
+
+###Item 42: Understand the two meanings of typename.
+
+在template声明式中，`class`和`typename`不一定相同。
+
+	template<typename C>
+	void print2nd(const C& container) {
+		if(container.size() >= 2) {
+			C::const_iterator iter(container.begin());
+			++iter;
+			int value = *iter;
+		{
+	}
+
+`iter`的类型是`C::const_iterator`，实际是什么值取决于`template`参数`C`。`template`内出现的名称如果相依于某个`template`参数，称之为从属名称。如果从属名称在`class`内呈嵌套状，我们称它为嵌套从属名称。`C::const_iterator`就是这样的一个名称。而`value`的类型`int`并不依赖`template`参数的名称，称之为非从属名称。**在缺省情况下，嵌套从属名称不是类型**。
+
+改为`typename C::const_iterator iter(container.begin());`。
+
+一种特列情况为，`typename`不可以出现在`base classes list`内的嵌套从属类型名称之前，也不可以在`member initialization list`中作为`base class`修饰符。
+
+	template<typename T>
+	class Derived: public Base<T>::Nested {
+	public:
+		explict Derived(int x): Base<T>::Nested(x) {
+			typename Base<T>::Nested temp;
+		}
+	};
+
+	最后一个例子：
+	template<typename IterT>
+	void workWithIterator(IterT iter) {
+		typename std::iterator_traits<IterT>::value_type temp(*iter);
+	}
+	
+###Item 43: Know how to access names in templatized base classes
+
+当我们从`Object Oriented C++`进入`Template C++`，继承就不像以前那般顺利。编译器知道`base class templates`有可能被特化，而那个特化版本可能不提供和一般性template相同的接口，因而它往往拒绝在`templatized base classes`内寻找继承而来的名称。
+
+	template<typename Company>
+	class LoggingMsgSender: public MsgSender<Company> {
+	public:
+		void sendClearMsg(const MsgInfo* info) {
+			sendClear(info);  //调用base class函数；这段代码无法通过编译
+		}
+	};
+
+基类`MsgSender<Company>`的特化版本，可能不提供`sendClear()`方法。
+
+解决方法：
+
+1. base class函数调用动作之前加上`this->`
+1. 在函数前使用using声明式，`using MsgSender<Company>::sendClear`.
+1. 直接使用`MsgSender<Company>：：sendClear(info)`。
+
+第三种做法有缺陷，如果被调用的是`virtual`函数，上述的做法会关闭`virtual绑定行为`。
+
+###Item 44: Factor parameter-independent code out of templates.
+
+- Templates生成多个classes和多个函数，所以任何template代码都不该与某个造成膨胀的template参数产生相依关系。
+- 因非类型模版参数而造成的代码膨胀，往往可消除，做法是以函数参数或class成员变量替换template参数。
+- 因类型参数而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述的具现类型共享实现码。
+    
+template &lt;T*>可以改为`tempalte<void*>`减少代码膨胀。
