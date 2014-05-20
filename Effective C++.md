@@ -516,3 +516,76 @@ virtual函数是动态绑定，而缺省参数值确实静态绑定。静态绑�
 - 因类型参数而造成的代码膨胀，往往可降低，做法是让带有完全相同二进制表述的具现类型共享实现码。
     
 template &lt;T*>可以改为`tempalte<void*>`减少代码膨胀。
+
+###Item 45: Use member function templates to accept "all compatible types"
+
+如果以带有`base-derived`关系的B，D两类型分别具现化某个template，产生出来的两个具现体并不带有`base-derived`关系。
+
+	template<typename T>
+	class SmartPtr {
+	public:
+		tempalte<typename U> //member template, 为了生成copy构造函数
+		SmartPtr(const SmartPtr<U>& other); 
+	};
+
+这一类构造函数根据SmartPtr&lt;U>创建一个Smart&lt;T>。未加上`explicit`是因为原始指针类型之间的转换（例如从derived转化base）是隐式转换。可以在构造模板实现代码中约束行为：
+
+	template<typename T>
+	class SmartPtr {
+	public:
+		tempalte<typename U> //以other的heldPtr初始化this的heldPtr
+		SmartPtr(const SmartPtr<U>& other):heldPtr(other.get()) {}
+		T * get() const { return heldPtr; }
+	private:
+		T* heldPtr; 
+	};
+
+成员函数模板的效用不限于构造函数，它们常扮演的另一个角色是支持赋值操作。
+
+	template<typename T>
+	class shared_ptr {
+	public:
+		template<class Y>
+		explicit shared_ptr(Y* p);
+		template<class Y>
+		shared_ptr(shared_ptr<Y> const& r);
+		template<class Y>
+		explicit shared_ptr(weak_ptr<Y> const& r);
+		template<class Y>
+		explicit shared_ptr(auto_ptr<Y> const& r);
+		template<class Y>
+		shared_ptr& operator=(shared_ptr<Y> const& r);
+		template<class Y>
+		shared_ptr& operator=(auto_ptr<Y> & r);
+	};
+
+上述函数的`explict`表示从某个shared\_ptr类型隐式转换至另一个shared\_ptr类型是被允许的，但从某个内置指针或从其他智能指针类型进行隐式转换则不被认可。auto\_ptr不声明const是因为复制一个auto\_ptr，它其实被改动了。
+
+在class内声明泛化copy构造函数并不会阻止编译器生成它们自己的copy构造函数。
+
+###Item 46: Define non-member functions inside templates when type conversions are desired.
+
+将Item24的例子改为模板：
+
+	template<typename T>
+	class Rational {
+	public:
+		Rational(const T& numerator = 0, const T& denominator = 1);
+		
+		template<typename T>
+		const Rational<T> operator* (const Rational<T> &rhs, const Rational<T> &rhs);
+	};
+
+	Rational oneHalf(1, 2);
+	result = oneHalf * 2; // 无法通过编译，不加模板则可以
+
+这是因为template实参推导过程中从不将隐式类型转换函数考虑在内。可以改为如下：
+
+	friend const Rational operator* (const Rational &rhs, const Rational &rhs); //省略了<T>
+
+当对象oneHalf被声明为一个Rational<int>, 模板被具现化出来，而作为过程的一部分friend函数（接受Rational<int> 参数）也就自动声明出来，后者作为一个函数而非函数模板，因此编译器可以在调用它时使用隐式转换函数。
+
+###Item 47: Use traits classes for information about types.
+ 
+		
+	
