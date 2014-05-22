@@ -585,7 +585,14 @@ template &lt;T*>可以改为`tempalte<void*>`减少代码膨胀。
 
 当对象oneHalf被声明为一个Rational<int>, 模板被具现化出来，而作为过程的一部分friend函数（接受Rational<int> 参数）也就自动声明出来，后者作为一个函数而非函数模板，因此编译器可以在调用它时使用隐式转换函数。
 
-###Item 47: Use traits classes for information about types.
+
+##定制new和delete
+###Item 49: Understand the behavior of the new-handler.
+
+set_new_handler允许客户指定一个函数，在内存分配无法获得满足时候被调用。
+
+
+
  
 		
 	
